@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Etiquetas Packing List por Cliente</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .hoja {
+      width: 8.5in;
+      height: 11in;
+      display: grid;
+      grid-template-columns: 10.2cm 10.2cm;
+      grid-template-rows: repeat(3, 8.5cm);
+      column-gap: 0.5cm;
+      row-gap: 0cm;
+      box-sizing: border-box;
+      padding-top: 0.5in;
+      padding-bottom: 0.5in;
+      padding-left: 0.4cm;
+      padding-right: 0.4cm;
+      page-break-after: always;
+      background: white;
+    }
+
+    .etiqueta {
+      width: 10.2cm;
+      height: 8.4cm;
+      box-sizing: border-box;
+      border: 1px solid black;
+      padding: 6px;
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: black;
+      background: white;
+    }
+
+    .etiqueta header {
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .linea-informacion {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .linea-informacion img {
+      max-height: 45px;
+    }
+
+    .info-empresa {
+      width: 33%;
+      text-align: left;
+    }
+
+    .info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .info div span {
+      font-weight: bold;
+    }
+
+    .datos {
+      font-size: 10px;
+      margin: 2px 0;
+      width: 100%;
+      color: black;
+    }
+
+    .datos span {
+      font-weight: bold;
+    }
+
+    .tabla-productos {
+      margin-top: 4px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .fila-producto {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 2px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .tabla-productos input {
+      text-align: center;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .fila-producto input:nth-child(1),
+    .fila-producto input:nth-child(3) {
+      width: 20%;
+      font-size: 9px;
+    }
+
+    .fila-producto input:nth-child(2) {
+      width: 55%;
+      font-size: 7px;
+    }
+
+    .boton-agregar {
+      font-size: 10px;
+      padding: 2px 4px;
+      margin-top: 2px;
+      align-self: center;
+      background-color: #8B0000;
+      color: white;
+      border: none;
+      border-radius: 3px;
+    }
+
+    .btn-eliminar-etiqueta {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #8B0000;
+      color: white;
+      border: none;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    .btn-eliminar-fila {
+      font-size: 10px;
+      padding: 2px 5px;
+      margin-left: 4px;
+      background: #8B0000;
+      color: white;
+      border: none;
+      border-radius: 3px;
+    }
+
+    .no-print {
+      margin: 10px 0;
+    }
+
+    .logo-principal img {
+      max-width: 180px;
+      height: auto;
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .no-print input,
+    .no-print button,
+    .no-print select {
+      margin: 2px;
+      padding: 5px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .no-print button {
+      background: #8B0000;
+      color: white;
+      cursor: pointer;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    @media print {
+      body {
+        background: none;
+        margin: 0;
+        padding: 0;
+      }
+      .no-print,
+      .btn-eliminar-etiqueta,
+      .boton-agregar,
+      .tabla-productos button {
+        display: none !important;
+      }
+      .app-wrapper {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="logo-principal no-print">
+      <img src="logo.png" alt="Logo Principal" />
+    </div>
+    <div class="no-print">
+      <label>Cliente:
+        <select id="cliente">
+          <option value="">-- Selecciona cliente --</option>
+        </select>
+      </label>
+      <button onclick="nuevoCliente()">+ Cliente</button>
+      <button onclick="eliminarCliente()">🗑 Eliminar cliente</button>
+      <label>Fecha: <input type="date" id="fecha"></label>
+      <label>Pallet: <input type="text" id="pallet" maxlength="1"></label>
+      <label>Box: <input type="number" id="box"></label>
+      <button onclick="agregarEtiqueta()">Agregar etiqueta</button>
+      <button onclick="guardarEtiquetas()">💾 Guardar etiquetas</button>
+      <button onclick="window.print()">🖨 Imprimir</button>
+      <button onclick="borrarTodo()">🗑 Borrar todo</button>
+    </div>
+    <div id="contenedor"></div>
+    <footer style="color: white; text-align: center; margin-top: 20px;" class="no-print">
+      <span>&copy; Ing. Derek Franco 2025</span>
+    </footer>
+  </div>
+
+  <script>
+    const clienteSelect = document.getElementById("cliente");
+
+    async function cargarClientes() {
+      const res = await fetch('/api/clientes');
+      const data = await res.json();
+      clienteSelect.innerHTML = '<option value="">-- Selecciona cliente --</option>' +
+        data.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join("");
+    }
+
+    async function nuevoCliente() {
+      const nombre = prompt("Nombre del nuevo cliente:");
+      if (!nombre?.trim()) return;
+      await fetch('/api/clientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre })
+      });
+      await cargarClientes();
+      clienteSelect.value = nombre;
+      cargarEtiquetas();
+    }
+
+    async function eliminarCliente() {
+      const cliente = clienteSelect.value;
+      if (!cliente) return alert("Selecciona un cliente para eliminar.");
+      if (!confirm(`¿Eliminar al cliente "${cliente}"?`)) return;
+      await fetch(`/api/clientes/${encodeURIComponent(cliente)}`, {
+        method: 'DELETE'
+      });
+      await cargarClientes();
+      clienteSelect.value = '';
+      document.getElementById('contenedor').innerHTML = '';
+    }
+
+    clienteSelect.addEventListener('change', cargarEtiquetas);
+
+    function crearFilaProducto(qty = '', model = '', crown = '') {
+      const fila = document.createElement('div');
+      fila.className = 'fila-producto';
+      fila.innerHTML = `
+        <input placeholder="QTY" type="number" value="${qty}">
+        <input placeholder="MODEL" type="text" value="${model}">
+        <input placeholder="CROWN" type="text" value="${crown}">
+        <button class="btn-eliminar-fila" onclick="this.parentElement.remove()">❌</button>
+
+      `;
+      return fila;
+    }
+
+    function actualizarNumerosDeEtiqueta() {
+      document.querySelectorAll('.etiqueta').forEach((et, idx) => {
+        const span = et.querySelector('.datos span');
+        if (span) span.textContent = `Label Number: ${idx + 1}`;
+      });
+    }
+
+    function agregarEtiqueta(etiquetaData = null, guardar = true) {
+      const cliente = clienteSelect.value;
+      if (!cliente) return alert("Selecciona un cliente primero");
+
+      const cont = document.getElementById('contenedor');
+      let hoja = cont.lastElementChild;
+      if (!hoja || hoja.children.length >= 6) {
+        hoja = document.createElement('div');
+        hoja.className = 'hoja';
+        cont.appendChild(hoja);
+      }
+
+      let fecha = '', pallet = '', box = '';
+      if (etiquetaData) {
+        ({ fecha, pallet, box } = etiquetaData);
+      } else {
+        const f = document.getElementById('fecha').value;
+        if (f) {
+          const [a, m, d] = f.split('-');
+          fecha = `${m}/${d}/${a}`;
+        }
+        pallet = document.getElementById('pallet').value.toUpperCase();
+        box = document.getElementById('box').value;
+      }
+
+      const etiqueta = document.createElement('div');
+      etiqueta.className = 'etiqueta';
+      etiqueta.innerHTML = `
+        <button class="btn-eliminar-etiqueta" onclick="this.parentElement.remove(); guardarEtiquetas(); actualizarNumerosDeEtiqueta()">✖</button>
+        <header>PACKING LIST</header>
+        <div class="linea-informacion">
+          <div class="info-empresa"><strong>PROHATS S.A. DE C.V.</strong><br>CALLE 20 2703-A<br>CHIHUAHUA, CHIH. 31064<br>+52 614 354 9381</div>
+          <img src="logo.png" alt="Logo Prohats">
+          <div class="info-empresa"><strong>PROHATS INC</strong><br>7960 ARTCRAFT RD.<br>EL PASO, TX. 79932<br>+ 1 (915) 297 77 62</div>
+        </div>
+        <div class="info">
+          <div><span>Date:</span> ${fecha}</div>
+          <div><span>Pallet:</span> ${pallet}</div>
+          <div><span>Box:</span> ${box}</div>
+        </div>
+        <div class="datos"><span>No. etiqueta:</span></div>
+        <div class="tabla-productos"></div>
+        <button class="boton-agregar" onclick="this.previousElementSibling.appendChild(crearFilaProducto()); guardarEtiquetas()">+ Modelo</button>
+
+
+      `;
+
+      hoja.appendChild(etiqueta);
+      const tabla = etiqueta.querySelector('.tabla-productos');
+
+      if (etiquetaData?.productos?.length) {
+        etiquetaData.productos.forEach(p => tabla.appendChild(crearFilaProducto(p.qty, p.model, p.crown)));
+      } else {
+        tabla.appendChild(crearFilaProducto());
+      }
+
+      actualizarNumerosDeEtiqueta();
+
+      if (guardar) guardarEtiquetas();
+
+      if (!etiquetaData) {
+        document.getElementById('pallet').value = '';
+        document.getElementById('box').value = '';
+      }
+    }
+
+    async function guardarEtiquetas() {
+      const etiquetas = Array.from(document.querySelectorAll('.etiqueta')).map(e => {
+        const [ , fecha ] = e.querySelector('.info div:nth-child(1)').textContent.split(': ');
+        const [ , pallet ] = e.querySelector('.info div:nth-child(2)').textContent.split(': ');
+        const [ , box ] = e.querySelector('.info div:nth-child(3)').textContent.split(': ');
+        const productos = Array.from(e.querySelectorAll('.fila-producto')).map(p => ({
+          qty: p.children[0].value,
+          model: p.children[1].value,
+          crown: p.children[2].value
+        }));
+        return { fecha, pallet, box, productos };
+      });
+
+      await fetch(`/api/etiquetas/${encodeURIComponent(clienteSelect.value)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(etiquetas)
+      });
+    }
+
+    async function cargarEtiquetas() {
+      const cliente = clienteSelect.value;
+      document.getElementById('contenedor').innerHTML = '';
+      if (!cliente) return;
+      const res = await fetch(`/api/etiquetas/${encodeURIComponent(cliente)}`);
+      const data = await res.json();
+      data.forEach(et => agregarEtiqueta(et, false)); // No guardar al cargar
+    }
+
+    async function borrarTodo() {
+      const cliente = clienteSelect.value;
+      if (!cliente) return alert("Selecciona un cliente primero");
+      if (!confirm(`¿Eliminar todas las etiquetas de "${cliente}"?`)) return;
+      await fetch(`/api/etiquetas/${encodeURIComponent(cliente)}`, { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify([]) });
+      document.getElementById('contenedor').innerHTML = '';
+    }
+
+    // Arranque
+    cargarClientes();
+  </script>
+</body>
+</html>

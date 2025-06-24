@@ -325,34 +325,27 @@
       const etiqueta = document.createElement('div');
       etiqueta.className = 'etiqueta';
       etiqueta.innerHTML = `
-  <button class="btn-eliminar-etiqueta" onclick="this.parentElement.remove(); guardarEtiquetas(); actualizarNumerosDeEtiqueta()">✖</button>
-  <header>PACKING LIST</header>
-  <div class="linea-informacion">
-    <div class="info-empresa"><strong>PROHATS S.A. DE C.V.</strong><br>CALLE 20 2703-A<br>CHIHUAHUA, CHIH. 31064<br>+52 614 354 9381</div>
-    <img src="logo.png" alt="Logo Prohats">
-    <div class="info-empresa"><strong>PROHATS INC</strong><br>7960 ARTCRAFT RD.<br>EL PASO, TX. 79932<br>+ 1 (915) 297 77 62</div>
-  </div>
-  <div class="info">
-    <div><span>Date:</span> ${fecha}</div>
-    <div><span>Pallet:</span> ${pallet}</div>
-    <div><span>Box:</span> ${box}</div>
-  </div>
-  <div class="datos"><span>No. etiqueta:</span></div>
-  <div class="tabla-productos"></div>
-`;
+        <button class="btn-eliminar-etiqueta" onclick="this.parentElement.remove(); guardarEtiquetas(); actualizarNumerosDeEtiqueta()">✖</button>
+        <header>PACKING LIST</header>
+        <div class="linea-informacion">
+          <div class="info-empresa"><strong>PROHATS S.A. DE C.V.</strong><br>CALLE 20 2703-A<br>CHIHUAHUA, CHIH. 31064<br>+52 614 354 9381</div>
+          <img src="logo.png" alt="Logo Prohats">
+          <div class="info-empresa"><strong>PROHATS INC</strong><br>7960 ARTCRAFT RD.<br>EL PASO, TX. 79932<br>+ 1 (915) 297 77 62</div>
+        </div>
+        <div class="info">
+          <div><span>Date:</span> ${fecha}</div>
+          <div><span>Pallet:</span> ${pallet}</div>
+          <div><span>Box:</span> ${box}</div>
+        </div>
+        <div class="datos"><span>No. etiqueta:</span></div>
+        <div class="tabla-productos"></div>
+        <button class="boton-agregar" onclick="this.previousElementSibling.appendChild(crearFilaProducto()); guardarEtiquetas()">+ Modelo</button>
 
-const tabla = etiqueta.querySelector('.tabla-productos');
 
-const botonAgregar = document.createElement('button');
-botonAgregar.className = 'boton-agregar';
-botonAgregar.textContent = '+ Modelo';
-botonAgregar.onclick = () => {
-  tabla.appendChild(crearFilaProducto());
-  guardarEtiquetas();
-};
+      `;
 
-etiqueta.appendChild(botonAgregar);
-
+      hoja.appendChild(etiqueta);
+      const tabla = etiqueta.querySelector('.tabla-productos');
 
       if (etiquetaData?.productos?.length) {
         etiquetaData.productos.forEach(p => tabla.appendChild(crearFilaProducto(p.qty, p.model, p.crown)));
